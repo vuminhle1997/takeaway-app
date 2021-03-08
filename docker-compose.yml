@@ -1,0 +1,15 @@
+version: '2'
+services:
+  web:
+    build: .
+    ports: 
+      - "80:80"
+    external_links:
+      - db
+  db:
+    container_name: mongo
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes: 
+      - /var/src/mongo/data:/data/db

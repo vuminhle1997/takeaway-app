@@ -1,0 +1,133 @@
+import React, { useEffect, useState } from 'react'
+import ProductContainer from '../ProductContainer/ProductContainer';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import { Container } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import Header from '../header/Header';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+      flexGrow: 1,
+      margin: "2rem auto"
+    },
+    paper: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+    },
+}));
+
+export default function Home() {
+    const classes = useStyles();
+    const [products, setProducts] = useState([]);
+
+    const [personalItems, setPersonalItems] = useState([]);
+
+    useEffect(() => {
+        fetchProducts();
+        getShoppingCart();
+        
+    }, []);
+
+    useEffect(() => {
+        if (personalItems.length > 0)
+            localStorage.setItem("products", JSON.stringify(personalItems));
+    }, [personalItems]);
+
+    const addItem = (product, count) => {
+        const item = {
+            product: product,
+            count: count
+        }
+        setPersonalItems(prev => [...prev, item]);
+    }
+
+    const removeItem = (product) => {
+        setPersonalItems(personalItems.filter(item => item.product._id !== product._id));
+    }
+
+    const editItem = (index, count) => {
+        if (personalItems.length > 0) {
+            let newArray = [...personalItems];
+            newArray[index].count = count;
+            setPersonalItems(newArray);
+        }
+    }
+
+    const getIndexOfItem = (product) => {
+        let index = personalItems.findIndex((item, index) => {
+            const id = product._id;
+            const itemId = item.product._id;
+
+            if (itemId === id) {
+                console.log(index);
+                return index;
+            }
+        });
+
+        return index;
+    }
+
+    const isAlreadyInCart = (product) => {
+        let isInside = false;
+        let count = 1;
+
+        personalItems.forEach(item => {
+            if (item.product._id === product._id) {
+                isInside = true;
+                count = item.count;
+            }
+        });
+
+        return {
+            inside: isInside,
+            count: count
+        }
+    }
+
+    const fetchProducts = async() => {
+        const promise = await fetch("http://localhost:80/products");
+
+        if (promise.ok) {
+            const data = await promise.json();
+            setProducts(data.products);
+            console.log(data);
+        } else {
+            console.error(promise.status);
+        }
+    }
+
+    const getShoppingCart = () => {
+        const products = JSON.parse(localStorage.getItem("products"));
+        setPersonalItems(products);
+    }
+
+    return (
+        <>  
+            <Header count={personalItems.length}/>
+            <Container className={classes.root}>
+            {
+                <Grid container spacing={3}>
+                    
+                        {
+                            products.map(product => {
+                                return <ProductContainer
+                                    key={product._id}
+                                    product={product}
+                                    addItem={addItem}
+                                    removeItem={removeItem}
+                                    editItem={editItem}
+                                    getIndexOfItem={getIndexOfItem}
+    
+                                    isAlreadyInCart={isAlreadyInCart}
+                                />
+                            })
+                        }
+                    
+                </Grid> 
+            }
+            </Container>
+        </>
+    )
+}
