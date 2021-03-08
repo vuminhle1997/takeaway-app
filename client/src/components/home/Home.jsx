@@ -100,12 +100,13 @@ export default function Home() {
 
     const getShoppingCart = () => {
         const products = JSON.parse(localStorage.getItem("products"));
-        setPersonalItems(products);
+        
+        if (products) setPersonalItems(products);
     }
 
     return (
         <>  
-            <Header count={personalItems.length}/>
+            <Header count={personalItems?.length || 0}/>
             <Container className={classes.root}>
             {
                 <Grid container spacing={3}>

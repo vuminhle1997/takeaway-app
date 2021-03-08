@@ -14,8 +14,9 @@
     "nodemon": "^2.0.7"
   },
   "scripts": {
+    "start": "NODE_ENV=react MONGO_URI=mongodb://mongo:27017/takeaway-app node index.js",
     "dev": "NODE_ENV=dev nodemon index.js",
     "dev:react": "concurrently \"NODE_ENV=react nodemon index.js\" \"yarn --cwd ./client start\"",
-    "start:react": "NODE_ENV=react node index.js"
+    "start:react": "NODE_ENV=react MONGO_URI=mongodb://localhost:27017/takeaway-app node index.js"
   }
 }
