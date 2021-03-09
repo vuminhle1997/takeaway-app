@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react'
 import ProductContainer from '../ProductContainer/ProductContainer';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { Container } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Header from '../header/Header';
 import Footer from '../footer/Footer';
-import { Product, ProductObject } from '../../utils/types';
+import { ItemObject, Product, ProductObject } from '../../utils/types';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -22,9 +20,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home() {
     const classes = useStyles();
-    const [products, setProducts] = useState<any[]>([]);
+    const [products, setProducts] = useState<ProductObject[]>([]);
 
-    const [personalItems, setPersonalItems] = useState<any[]>([]);
+    const [personalItems, setPersonalItems] = useState<ItemObject[]>([]);
 
     useEffect(() => {
         fetchProducts();
@@ -37,15 +35,12 @@ export default function Home() {
             localStorage.setItem("products", JSON.stringify(personalItems));
     }, [personalItems]);
 
-    const addItem = (product: any, count: number) => {
-        const item = {
-            product: product,
-            count: count
-        }
+    const addItem = (product: ProductObject, count: number) => {
+        const item = new ItemObject(product, count);
         setPersonalItems(prev => [...prev, item]);
     }
 
-    const removeItem = (product: any) => {
+    const removeItem = (product: ProductObject) => {
         setPersonalItems(personalItems.filter(item => item.product._id !== product._id));
     }
 
@@ -57,7 +52,7 @@ export default function Home() {
         }
     }
 
-    const getIndexOfItem = (product: any) => {
+    const getIndexOfItem = (product: ProductObject) => {
         let index = personalItems.findIndex((item, index) => {
             const id = product._id;
             const itemId = item.product._id;
@@ -99,7 +94,6 @@ export default function Home() {
             const mappedProducts = products.map(product => new ProductObject(product));
 
             setProducts(mappedProducts);
-            //console.log(products);
         } else {
             console.error(promise.status);
         }

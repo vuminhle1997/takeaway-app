@@ -41,3 +41,12 @@ export class ProductObject {
         this.price = product.data.price;
     }
 }
+
+export class ItemObject {
+    product: ProductObject;
+    count: number;
+    constructor(product: ProductObject, count: number){
+        this.product = product;
+        this.count = count;
+    }
+}
