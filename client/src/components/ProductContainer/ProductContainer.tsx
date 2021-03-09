@@ -3,19 +3,29 @@ import React, { useEffect, useState } from 'react';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import RemoveIcon from '@material-ui/icons/Remove';
 
-export default function ProductContainer({
-    key,
-    id,
-    product,
-    addItem,
-    removeItem,
-    editItem, 
-    getIndexOfItem,
+interface IProductContainerProps {
+    key: string;
+    id: string;
+    product: any;
+    addItem: (product: any, count: number) => void;
+    removeItem: any;
+    editItem: any;
+    getIndexOfItem: any;
+    isAlreadyInCart: any;
+}
 
-    isAlreadyInCart
-}) {
-    const [checked, setChecked] = useState(false);
-    const [count, setCount] = useState(1);
+export default function ProductContainer({
+    addItem,
+    editItem,
+    getIndexOfItem,
+    id,
+    isAlreadyInCart,
+    key,
+    product,
+    removeItem
+}: IProductContainerProps) {
+    const [checked, setChecked] = useState<boolean>(false);
+    const [count, setCount] = useState<number>(1);
 
     useEffect(() => {
         const obj = isAlreadyInCart(product);

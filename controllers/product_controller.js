@@ -1,5 +1,6 @@
 const Product = require('../models/product');
 const isReact = process.env.NODE_ENV === "react";
+const { v4: uuidv4 } = require("uuid");
 
 // controller = request, response 
 const addProduct = async (req, res) => {
@@ -41,10 +42,34 @@ const addProduct = async (req, res) => {
 const getProducts = async (req, res) => {
     await Product.find({}).then(docs => {
         if (docs) {
-            if (!isReact)
-                return res.status(200).render("index", {products: docs});
-            else
-                return res.status(200).json({products: docs});
+            if (!isReact) {
+                const id = uuidv4();
+                const options = {
+                    maxAge: Date.now() + 864000000,
+                    httpOnly: true
+                }
+                return res.status(200)
+                    .cookie("cart-id", id, options)
+                    .render("index", {products: docs});
+            } else if (req.cookies["card-id"] && !isReact) {
+                return res.status(200)
+                    .render("index", {products: docs});
+            }
+                
+            if (req.cookies["card-id"]) {
+                const id = uuidv4();
+                const options = {
+                    maxAge: Date.now() + 864000000,
+                    httpOnly: true
+                }
+                return res
+                    .status(200)
+                    .cookie("cart-id", id, options)
+                    .json({products: docs});
+            }
+            return res
+                    .status(200)
+                    .json({products: docs});
         }
         return res.status(500).json({err: "error"})
     }).catch(err => {

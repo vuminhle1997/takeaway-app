@@ -4,6 +4,7 @@ const cors = require("cors");
 const PORT = process.env.PORT || 80;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/takeaway-app";
 const ENV = process.env.NODE_ENV;
+const cookieParser = require("cookie-parser");
 
 const path = require('path');
 
@@ -18,7 +19,8 @@ mongoose.connect(MONGO_URI, {
 console.log(ENV);
 
 const app = express();
-app.use(cors());
+app.use(cors({origin: ["http://localhost:3000", "http://localhost:80"], credentials: true}));
+app.use(cookieParser());
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 app.use(express.json());

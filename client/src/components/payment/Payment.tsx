@@ -1,6 +1,10 @@
 import { Button, Container, makeStyles, Paper, TextField } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
+
+interface LocationState {
+    products: any[];
+}
 
 const useStyles = makeStyles({
     form: {
@@ -10,9 +14,15 @@ const useStyles = makeStyles({
     field: {
         margin: ".5rem auto"
     }
-})
+});
 
-export default function Payment({products}) {
+interface IPaymentProps {
+    products: any[];
+}
+
+export default function Payment({
+    products
+}: IPaymentProps) {
     const classes = useStyles();
     const history = useHistory();
 
@@ -26,22 +36,23 @@ export default function Payment({products}) {
     }, [])
 
     const sendForm = async() => {
-        const products = history.location.state.products;
-        let promise = await fetch("", {
-            method: "POST",
-            body: JSON.stringify(products),
-        });
+        // const { state } = useLocation<LocationState>();
+        // const products = state.products;
+        // let promise = await fetch("", {
+        //     method: "POST",
+        //     body: JSON.stringify(products),
+        // });
 
-        if (promise.ok) {
-            let data = await promise.json();
-            console.log(data);
+        // if (promise.ok) {
+        //     let data = await promise.json();
+        //     console.log(data);
 
-            setTimeout(() => {
-                history.push("/");
-            }, 1500);
-        } else {
-            console.error(promise.status);
-        }
+        //     setTimeout(() => {
+        //         history.push("/");
+        //     }, 1500);
+        // } else {
+        //     console.error(promise.status);
+        // }
     }
 
     return (

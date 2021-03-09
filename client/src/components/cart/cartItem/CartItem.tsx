@@ -22,7 +22,15 @@ const useStyles = makeStyles({
     buttons: {
         margin: "auto 2rem",
     }
-})
+});
+
+interface ICartItemProps {
+    product: any;
+    count: number;
+    increment: any;
+    remove: any;
+    decrement: any;
+}
 
 export default function CartItem({
     product, count,
@@ -30,7 +38,7 @@ export default function CartItem({
     increment,
     remove,
     decrement
-}) {
+}: ICartItemProps) {
     const classes = useStyles();
     return (
         <Paper className={classes.root}>

@@ -4,9 +4,13 @@ import HomeIcon from '@material-ui/icons/Home';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { useHistory } from 'react-router';
 
+interface IHeaderProps {
+    count: number;
+}
+
 export default function Header({
     count = 0
-}) {
+}: IHeaderProps) {
     const history = useHistory();
     return (
         <AppBar

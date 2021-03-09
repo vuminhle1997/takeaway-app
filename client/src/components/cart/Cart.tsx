@@ -10,13 +10,19 @@ const useStyles = makeStyles({
         display: "flex",
         flexDirection: "column"
     }
-})
+});
 
-export default function Cart() {
+interface ICartProps {
+
+}
+
+export default function Cart({
+
+}: ICartProps) {
     const classes = useStyles();
     const history = useHistory();
 
-    const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState<any[]>([]);
 
     useEffect(() => {
         getCartItems();
@@ -27,7 +33,8 @@ export default function Cart() {
     }, [products]);
 
     const getCartItems = () => {
-        const products = JSON.parse(localStorage.getItem("products"));
+        const store = localStorage.getItem("products")
+        const products = store ? JSON.parse(store) : [];
         setProducts(products);
     }
 
@@ -40,7 +47,7 @@ export default function Cart() {
         });
     }
 
-    const increment = (product) => {
+    const increment = (product: any) => {
         for (let i = 0; i < products.length; i++) {
             const item = products[i];
 
@@ -55,7 +62,7 @@ export default function Cart() {
         }
     }
 
-    const decrement = (product) => {
+    const decrement = (product: any) => {
         for (let i = 0; i < products.length; i++) {
             const item = products[i];
 
@@ -68,7 +75,7 @@ export default function Cart() {
         }
     }
 
-    const remove = (product) => {
+    const remove = (product: any) => {
         for (let i = 0; i < products.length; i++) {
             const item = products[i];
 
