@@ -14,7 +14,7 @@ interface Reference {
     }
 }
 
-interface IItem {
+export interface IItem {
     count: number
     id: string
     price: number
