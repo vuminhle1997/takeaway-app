@@ -1,7 +1,9 @@
 import express from 'express';
-import { submitPayment } from '../../../controllers/payment_controller';
+import { submitPayment, getBill } from '../../../controllers/payment_controller';
 const router = express.Router();
 
-router.post("/", submitPayment);
+router.post("/", submitPayment)
+
+router.get("/", getBill)
 
 export = router;

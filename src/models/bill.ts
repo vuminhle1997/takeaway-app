@@ -1,3 +1,5 @@
+import { Item } from '../types/fauna_types';
+
 enum Payment {
     Cash = "Cash",
     Visa = "Visa",
@@ -12,12 +14,6 @@ export interface IPaymentFormInput {
     telephone: string;
     message: string;
     payment: Payment;
-}
-
-export interface Item {
-    id: string;
-    count: number;
-    price: number;
 }
 
 export class Bill {
@@ -45,15 +41,4 @@ export class Bill {
         })
         return total
     }
-}
-
-export interface Reference {
-    "@ref": {
-        id: string;
-        // ...  
-    }
-}
-
-export interface BillResponse {
-    ref: Reference
 }

@@ -1,21 +1,13 @@
 import { Request, Response } from 'express';
 import DB from '../db/fauna';
 import STATUS from 'http-status-codes';
-import { Bill, BillResponse, IPaymentFormInput, Item } from '../models/bill';
+import { Bill,  IPaymentFormInput } from '../models/bill';
 import {
-    Paginate,
     query
 } from 'faunadb'
-import { IProductInput, Product } from '../models/product';
-import { Reference } from '../models/bill';
-const {
-    Create,
-    Get,
-    Collection,
-    Ref,
-    Filter,
-    Lambda
-} = query;
+import { Product } from '../models/product';
+import { FaunaResponse } from '../types/fauna_types';
+import { Item } from '../types/fauna_types';
 
 export const submitPayment = async(req: Request, res: Response) => {
     const form: IPaymentFormInput = req.body.payment;
@@ -23,8 +15,7 @@ export const submitPayment = async(req: Request, res: Response) => {
 
     const ids = products.map(item => item.id);
 
-    console.log(ids, products)
-
+    // queries expression
     const queryIdExp = query.Filter(
         query.Map(
             query.Paginate(query.Documents(query.Collection(DB.PRODUCTS))),
@@ -35,77 +26,65 @@ export const submitPayment = async(req: Request, res: Response) => {
                 ids
             )
         )
-    );
-
+    )
     const resolveExp = query.Map(
         queryIdExp,
         query.Lambda(id => query.Get(query.Ref(query.Collection(DB.PRODUCTS), id)))
     )
 
-       
-    // const items = DB.client.query(
-    //     Filter(
-    //         Paginate
-    //     )
-    // )
-    
-    // const bill = new Bill(form, products);
-
-    // const createQuery = DB.client.query(
-    //     Create(
-    //         DB.BILLS,
-    //         {
-    //             data: bill
-    //         }
-    //     )
-    // );
-
-    // await createQuery.then((data: any) => {
-    //     let response: BillResponse = data.ref;
-    //     const date = new Date();
-    //     date.setTime(date.getTime() + (1000 * 60 * 60 * 24));
-    //     return res.status(STATUS.CREATED)
-    //         .cookie("bill-id", response.ref['@ref'].id, { expires: date, httpOnly: true })
-    //         .json(data);
-    // }).catch(err => {
-    //     console.error(err)
-    //     res.status(STATUS.INTERNAL_SERVER_ERROR)
-    //         .json(err)
-    // })
-
+    // execution query
     const queryIds: any = await DB.client.query(resolveExp)
     
-    const productsResolved: any[] = queryIds.data;
+    const productsResolved: FaunaResponse<any, Product>[] = queryIds.data;
     let buyedItems: Item[] = [];
 
-    // productsResolved.forEach((product: any) => {
-    //     const ref: Reference = product.ref;
+    for(const product of productsResolved) {
+        const ref = product.ref
+        const id: string = await DB.client.query(query.Select("id", ref))
+        const obj = products.find(item => item.id === id)
+        if (obj) {
+            const item: Item = {
+                id: id,
+                count: obj.count,
+                price: product.data.price
+            }
+            buyedItems.push(item)
+        }
+    }
 
-    //     const getItem = products.find(item => item.id === ref['@ref'].id)
-    //     if (getItem) {
-    //         const item: Item = {
-    //             count: getItem.count,
-    //             id: getItem.id,
-    //             price: product.price
-    //         }
-    //         buyedItems.push(item)
-    //     }
-    // })
+    // bill creation
+    const bill = new Bill(form, buyedItems)
+    const createBillExp = query.Create(
+        query.Collection(DB.BILLS),
+        {
+            data: bill
+        }
+    )
 
+    // query execution and response
+    const billResponse: FaunaResponse<query.ExprVal, Bill> = await DB.client.query(createBillExp)
+    const billId = await DB.client.query(query.Select("id", billResponse.ref))
+    const date = new Date()
+    date.setDate(date.getTime() + (1000 * 60 * 60 * 24))
+    res
+        .cookie("bill-id", billId, { expires: date, httpOnly: true })
+        .send(billResponse) 
+}
 
+export const getBill = async(req: Request, res: Response) => {
+    const billId = req.cookies["bill-id"]
 
-    // const bill = new Bill(form, buyedItems)
+    if (billId) {
+        const getBillExp = query.Get(
+            query.Ref(query.Collection(DB.BILLS), billId)
+        )
 
-    // const createBillExp = query.Create(
-    //     query.Collection(DB.BILLS),
-    //     {
-    //         data: bill
-    //     }
-    // )
-
-    // const createBillQuery: any = await DB.client.query(createBillExp)
-    // const final: any = createBillQuery.data;
-
-    res.send(queryIds)
+        const queryExe: FaunaResponse<query.ExprVal, Bill> = await DB.client.query(getBillExp)
+    
+        res.status(STATUS.OK)
+            .json(queryExe)
+    } else {
+        res.status(STATUS.NOT_ACCEPTABLE).json({err: "missing cookie"})
+    }
 }
 
