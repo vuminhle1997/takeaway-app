@@ -48,17 +48,19 @@ export const createProduct = async(req: Request, res: Response) => {
 }
 
 export const getProducts = async(req: Request, res: Response) => {
-    const getQuery = DB.client.query(
-        query.Map(
-            query.Paginate(query.Documents(query.Collection(DB.PRODUCTS))),
-            query.Lambda(doc => query.Get(doc))
-        )
+    const queryGetProductsExp = query.Map(
+        query.Paginate(query.Documents(query.Collection(DB.PRODUCTS))),
+        query.Lambda(doc => query.Get(doc))
     );
 
-    await getQuery.then((response) => {
-        console.log("Products:", response);
-        return res.status(STATUS.ACCEPTED).json(response);
-    });
+    await DB.client.query(queryGetProductsExp)
+        .then(data => {
+            res.status(STATUS.OK).json(data);
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(STATUS.INTERNAL_SERVER_ERROR).json(err);
+        });
 }
 
 export const getProductById = async(req: Request, res: Response) => {

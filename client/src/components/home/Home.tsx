@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Header from '../header/Header';
 import Footer from '../footer/Footer';
 import { ItemObject, Product, ProductObject } from '../../utils/types';
+import React, { useState, useEffect } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     root: {
