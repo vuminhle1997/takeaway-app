@@ -12,7 +12,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={() => <Home />} />
           <Route path="/cart" component={() => <Cart />}/>
-          <Route path="/pay" component={() => <Payment products={[]}/>} />
+          <Route path="/pay" component={() => <Payment />} />
         </Switch>
       </div>
     </Router>

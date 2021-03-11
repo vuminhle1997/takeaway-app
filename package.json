@@ -32,7 +32,7 @@
   "scripts": {
     "start": "NODE_ENV=react MONGO_URI=mongodb://mongo:27017/takeaway-app node index.js",
     "dev": "NODE_ENV=dev nodemon index.js",
-    "dev:react": "concurrently \"NODE_ENV=react nodemon index.js\" \"yarn --cwd ./client start\"",
+    "dev:react": "concurrently \"NODE_ENV=dev nodemon \" \"yarn --cwd ./client start\"",
     "start:react": "NODE_ENV=react MONGO_URI=mongodb://localhost:27017/takeaway-app node index.js",
     "dev:ts": "NODE_DEV=dev nodemon"
   }

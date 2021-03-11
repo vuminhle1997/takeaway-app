@@ -1,6 +1,7 @@
-import { Button, Container, makeStyles } from '@material-ui/core'
+import { Button, Container, makeStyles, Typography } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router';
+import { ItemObject, ProductObject } from '../../utils/types';
 import Header from '../header/Header'
 import CartItem from './cartItem/CartItem';
 
@@ -9,6 +10,10 @@ const useStyles = makeStyles({
         margin: "2rem auto",
         display: "flex",
         flexDirection: "column"
+    },
+    total: {
+        padding: "1rem auto",
+        lineHeight: 2
     }
 });
 
@@ -22,7 +27,7 @@ export default function Cart({
     const classes = useStyles();
     const history = useHistory();
 
-    const [products, setProducts] = useState<any[]>([]);
+    const [products, setProducts] = useState<ItemObject[]>([]);
 
     useEffect(() => {
         getCartItems();
@@ -34,7 +39,7 @@ export default function Cart({
 
     const getCartItems = () => {
         const store = localStorage.getItem("products")
-        const products = store ? JSON.parse(store) : [];
+        const products: ItemObject[] = store ? JSON.parse(store) : [];
         setProducts(products);
     }
 
@@ -47,7 +52,7 @@ export default function Cart({
         });
     }
 
-    const increment = (product: any) => {
+    const increment = (product: ProductObject) => {
         for (let i = 0; i < products.length; i++) {
             const item = products[i];
 
@@ -62,7 +67,7 @@ export default function Cart({
         }
     }
 
-    const decrement = (product: any) => {
+    const decrement = (product: ProductObject) => {
         for (let i = 0; i < products.length; i++) {
             const item = products[i];
 
@@ -75,7 +80,7 @@ export default function Cart({
         }
     }
 
-    const remove = (product: any) => {
+    const remove = (product: ProductObject) => {
         for (let i = 0; i < products.length; i++) {
             const item = products[i];
 
@@ -86,6 +91,13 @@ export default function Cart({
                 break;
             }
         }
+    }
+
+    let total = 0
+    if (products.length > 0) {
+        products.forEach(item => {
+            total += item.count * item.product.price
+        })
     }
 
     return (
@@ -103,6 +115,15 @@ export default function Cart({
                             remove={remove}
                         />
                     })
+                }
+                {
+                    products.length > 0 && <div>
+                        <Typography className={classes.total} variant="h3" component="span">
+                            Total: {
+                                total
+                            } €
+                        </Typography>
+                    </div>
                 }
                 {
                     products.length > 0 && <Button onClick={() => redirectPurchase()} fullWidth={false} variant="contained" color="primary">Buy food!</Button>

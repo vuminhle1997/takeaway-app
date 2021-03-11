@@ -1,6 +1,10 @@
-import { ButtonGroup, makeStyles, Paper, Typography, Button } from '@material-ui/core'
 import React from 'react'
-import { ProductData } from '../../../utils/types'
+import { ItemObject } from '../../../utils/types'
+import { ButtonGroup, makeStyles, Paper, Typography, Button } from '@material-ui/core'
+
+interface IProductItemProps {
+    item: ItemObject
+}
 
 const useStyles = makeStyles({
     root: {
@@ -18,34 +22,26 @@ const useStyles = makeStyles({
     div: {
         display: "flex",
         flexDirection: "column",
-        margin: "auto 1rem"
+        margin: "auto 1rem",
     },
     buttons: {
         margin: "auto 2rem",
     }
 });
 
-interface ICartItemProps {
-    product: ProductData;
-    count: number;
-    increment: any;
-    remove: any;
-    decrement: any;
-}
-
-export default function CartItem({
-    product, count,
-
-    increment,
-    remove,
-    decrement
-}: ICartItemProps) {
+export default function ProductItem({
+    item
+}: IProductItemProps) {
     const classes = useStyles();
+    const { product, count } = item
     return (
         <Paper className={classes.root}>
             <img className={classes.img} src={product.image} />
             <div className={classes.div}>
                 <Typography component="h3" variant="h6">
+                    {product._id}
+                </Typography>
+                <Typography component="h4" variant="h6">
                     {product.name}
                 </Typography>
                 <Typography component="span" variant="body2">
@@ -61,19 +57,7 @@ export default function CartItem({
                     Price: {product.price} €
                 </Typography>
             </div>
-            <div className={classes.buttons}>
-                <ButtonGroup>
-                    <Button onClick={() => decrement(product)}>
-                        -
-                    </Button>
-                    <Button onClick={() => increment(product)}>
-                        +
-                    </Button>
-                    <Button color="secondary" onClick={() => remove(product)}>
-                        X
-                    </Button>
-                </ButtonGroup>
-            </div>
+            <div></div>
         </Paper>
     )
 }

@@ -4,7 +4,7 @@ import { Container } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Header from '../header/Header';
 import Footer from '../footer/Footer';
-import { ItemObject, Product, ProductObject } from '../../utils/types';
+import { IFaunaProduct, ItemObject, ProductObject } from '../../utils/types';
 import React, { useState, useEffect } from 'react';
 
 const useStyles = makeStyles((theme) => ({
@@ -91,7 +91,7 @@ export default function Home() {
 
         if (promise.ok) {
             const val = await promise.json();
-            const products: Product[] = val.data;
+            const products: IFaunaProduct[] = val.data;
             const mappedProducts = products.map(product => new ProductObject(product));
 
             setProducts(mappedProducts);

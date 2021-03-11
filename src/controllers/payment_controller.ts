@@ -65,9 +65,9 @@ export const submitPayment = async(req: Request, res: Response) => {
     const billResponse: FaunaResponse<query.ExprVal, Bill> = await DB.client.query(createBillExp)
     const billId = await DB.client.query(query.Select("id", billResponse.ref))
     const date = new Date()
-    date.setDate(date.getTime() + (1000 * 60 * 60 * 24))
+    
     res
-        .cookie("bill-id", billId, { expires: date, httpOnly: true })
+        .cookie("bill-id", billId, { expires: new Date(Date.now() + (1000 * 60 * 60 * 24)), httpOnly: true })
         .send(billResponse) 
 }
 
