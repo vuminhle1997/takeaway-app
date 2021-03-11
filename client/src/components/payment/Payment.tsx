@@ -5,10 +5,6 @@ import { ItemObject, Category, Payment as PaymentType } from '../../utils/types'
 import Notification from '../notification/Notification';
 import ProductList from './productList/ProductList';
 
-interface LocationState {
-    products: any[];
-}
-
 const useStyles = makeStyles((theme) => ({
     form: {
         margin: "2rem 5vw",

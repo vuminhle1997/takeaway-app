@@ -14,6 +14,22 @@ interface Reference {
     }
 }
 
+interface IItem {
+    count: number
+    id: string
+    price: number
+}
+
+export interface IBill {
+    name: string
+    telephone: string
+    email: string
+    message: string
+    payment: Payment
+    products: IItem[]
+    total: number
+}
+
 export enum Category {
     Food = "Food",
     Appetizer = "Appetizer",
@@ -44,6 +60,12 @@ export interface IFaunaProduct {
     ref: Reference;
     ts: number;
     data: ProductData;
+}
+
+export interface IFaunaResponse<T> {
+    ref: Reference
+    ts: number
+    data: T
 }
 
 export class ProductObject {

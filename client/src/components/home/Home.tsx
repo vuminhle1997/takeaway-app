@@ -4,8 +4,13 @@ import { Container } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Header from '../header/Header';
 import Footer from '../footer/Footer';
-import { IFaunaProduct, ItemObject, ProductObject } from '../../utils/types';
+import { IFaunaProduct, ItemObject, ProductData, ProductObject, IFaunaResponse, IBill } from '../../utils/types';
 import React, { useState, useEffect } from 'react';
+
+interface IHomeProps {
+    hasBill: boolean
+    bill: IBill | undefined
+}
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -19,16 +24,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Home() {
+export default function Home({
+    hasBill = false,
+    bill
+}: IHomeProps) {
     const classes = useStyles();
     const [products, setProducts] = useState<ProductObject[]>([]);
-
     const [personalItems, setPersonalItems] = useState<ItemObject[]>([]);
 
     useEffect(() => {
         fetchProducts();
         getShoppingCart();
-        
     }, []);
 
     useEffect(() => {
@@ -91,7 +97,7 @@ export default function Home() {
 
         if (promise.ok) {
             const val = await promise.json();
-            const products: IFaunaProduct[] = val.data;
+            const products: IFaunaResponse<ProductData>[] = val.data;
             const mappedProducts = products.map(product => new ProductObject(product));
 
             setProducts(mappedProducts);
@@ -109,7 +115,7 @@ export default function Home() {
 
     return (
         <>  
-            <Header count={personalItems?.length || 0}/>
+            <Header bill={bill} hasBill={hasBill} count={personalItems?.length || 0}/>
             <Container className={classes.root}>
             {
                 <Grid container spacing={3}>
@@ -126,6 +132,7 @@ export default function Home() {
                                     getIndexOfItem={getIndexOfItem}
     
                                     isAlreadyInCart={isAlreadyInCart}
+                                    hasBill={hasBill}
                                 />
                             })
                         }

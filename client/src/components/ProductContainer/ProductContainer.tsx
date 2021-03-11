@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Card, CardActionArea, CardActions, CardContent, CardMedia, Fab, Grid, Paper, Typography } from '@material-ui/core'
+import { Button, ButtonGroup, Card, CardActionArea, CardActions, CardContent, CardMedia, Fab, Grid, makeStyles, Paper, Typography } from '@material-ui/core'
 import React, { useEffect, useState } from 'react';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -12,7 +12,17 @@ interface IProductContainerProps {
     editItem: any;
     getIndexOfItem: any;
     isAlreadyInCart: any;
+    hasBill: boolean
 }
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+
+    },
+    weak: {
+        opacity: ".4"
+    }
+}))
 
 export default function ProductContainer({
     addItem,
@@ -22,8 +32,10 @@ export default function ProductContainer({
     isAlreadyInCart,
     key,
     product,
-    removeItem
+    removeItem,
+    hasBill
 }: IProductContainerProps) {
+    const classes = useStyles()
     const [checked, setChecked] = useState<boolean>(false);
     const [count, setCount] = useState<number>(1);
 
@@ -67,7 +79,7 @@ export default function ProductContainer({
     }
 
     return (
-        <Grid item xs={12} sm={4}>
+        <Grid className={hasBill ? classes.weak : ""} item xs={12} sm={4}>
             <Card>
                 <CardActionArea>
                     <CardMedia
@@ -92,9 +104,9 @@ export default function ProductContainer({
                     </CardContent>
                     <CardActions>
                         {
-                            !checked ? <Fab color="primary" onClick={handleClick}>
+                            !checked ? <Fab disabled={hasBill} color="primary" onClick={handleClick}>
                                 <AddShoppingCartIcon />
-                            </Fab> : <Fab color="secondary" onClick={handleClick}>
+                            </Fab> : <Fab disabled={hasBill} color="secondary" onClick={handleClick}>
                                 <RemoveIcon />
                             </Fab>
                         }

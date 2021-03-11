@@ -102,7 +102,7 @@ export default function Cart({
 
     return (
         <>
-            <Header count={0}/>
+            <Header bill={undefined} hasBill={false} count={0}/>
             <Container className={classes.root}>
                 {
                     products.length > 0 && products.map(item => {
