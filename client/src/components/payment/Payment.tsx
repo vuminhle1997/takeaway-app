@@ -113,6 +113,7 @@ export default function Payment() {
             localStorage.removeItem("products")
             setTimeout(() => {
                 history.push("/")
+                window.location.reload()
             }, 2500)
         } else {
             setError(true)
