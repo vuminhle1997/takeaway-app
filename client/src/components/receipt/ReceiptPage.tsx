@@ -19,7 +19,7 @@ export default function ReceiptPage({
         const productIds = bill?.products.map(product => product.id)
 
         if (productIds) {
-            Promise.all(productIds.map(id => fetch(`http://localhost:80/api/products/${id}`).then(res => res.json())))
+            Promise.all(productIds.map(id => fetch(`/api/products/${id}`).then(res => res.json())))
                 .then(jsons => {
                     setProducts(jsons)
                 }).catch(err => {

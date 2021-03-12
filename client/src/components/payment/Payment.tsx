@@ -104,7 +104,7 @@ export default function Payment() {
             },
             credentials: 'include'
         }
-        let promise = await fetch("http://localhost:80/api/payment/", config);
+        let promise = await fetch("/api/payment/", config);
 
         if (promise.ok) {
             // let data = await promise.json();

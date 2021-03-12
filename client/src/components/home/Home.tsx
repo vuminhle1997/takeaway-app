@@ -91,7 +91,7 @@ export default function Home({
     }
 
     const fetchProducts = async() => {
-        const promise = await fetch("http://localhost:80/api/products", {
+        const promise = await fetch("/api/products", {
             credentials: 'include'
         });
 

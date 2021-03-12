@@ -24,7 +24,7 @@ function App() {
             "Accept": "*/**"
         }
     }
-    const promise = await fetch("http://localhost:80/api/payment", config)
+    const promise = await fetch("/api/payment", config)
 
     if (promise.ok) {
         const fr: IFaunaResponse<IBill> = await promise.json()
