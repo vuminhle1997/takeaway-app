@@ -34,7 +34,7 @@
     "yarn": "1.x"
   },
   "scripts": {
-    "build": "tsc && yarn --cwd ./client build && mv ./client/build ./",
+    "build": "tsc && yarn --cwd ./client build && mv ./client/build ./dist",
     "start": "NODE_ENV=react node ./dist/index.js",
     "postinstall": "yarn --cwd ./client install",
     "dev": "NODE_ENV=dev nodemon index.js",
